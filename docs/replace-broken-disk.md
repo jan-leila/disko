@@ -1,5 +1,5 @@
 # ⚠️ WARNING ⚠️
-While disko can run incrementally it is not recommended for users that do not have a good recovery option in the case that something fails in an edge case. If keeping your data intact is critical make sure you are following the 3-2-1 backup strategy before proceeding. Read **ALL** steps of any recovery plan you decide on using before implementing them. The Developers of Disko are not responsible for any data loss you may incur from a failed recovery proceed at your own risk.
+While disko can run incrementally it is not recommended for users that do not have a good recovery option in the case that something fails due to some unforeseen edge case. If keeping your data intact is critical make sure you are following the 3-2-1 backup strategy before proceeding. Read **ALL** steps of any recovery plan you decide on using before implementing them. The Developers of Disko are not responsible for any data loss you may incur from a failed recovery proceed at your own risk.
 
 # Single drive failure:
 ## Situation:
