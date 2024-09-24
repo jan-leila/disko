@@ -118,6 +118,7 @@ We are going to define a system configuration that sets up two two drives in a z
 			zroot = {
 				type = "zpool";
 				mode = "mirror";
+				# NOTE: for this demo do we want to just drop the options here to have a more stripped down easier to understand configuration with less noise in it
 				options = {
 					ashift = "12";
 				};
