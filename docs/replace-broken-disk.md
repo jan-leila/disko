@@ -10,12 +10,14 @@ We are going to define a system configuration that sets up two two drives in a z
 {
   description = "Example ZFS recovery machine";
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
 		disko = {
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
   };
-  outputs = { self, nixpkgs, srvos, disko }: {
+  outputs = { self, nixpkgs, disko }: {
     nixosConfigurations.host = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -30,10 +32,10 @@ We are going to define a system configuration that sets up two two drives in a z
 
 `host.nix`
 ```nix
-{ inputs, lib, ... }:
+{ inputs, lib, config, ... }:
 {
   imports = [
-    ./disko-zfs.nix
+    ./disko-config.nix
   ];
 
   options.host.disko.disks = lib.mkOption {
@@ -47,18 +49,21 @@ We are going to define a system configuration that sets up two two drives in a z
 			enable = true;
 			efiSupport = true;
 			efiInstallAsRemovable = true;
+			devices = lib.mkForce [];
 			mirroredBoots = lib.imap0 (i: device: lib.mkMerge [
 				(lib.mkIf (i == 0) {
 					path = "/boot";
 				})
 				(lib.mkIf (i != 0) {
-					path = "/boot-fallback-${i}";
+					path = "/boot-fallback-${toString i}";
 				})
 				{
 					devices = [ "nodev" ];
 				}
 			]) config.host.disko.disks;
 		};
+
+    networking.hostId = "c843aedb";
 
 		system.stateVersion = "23.11";
 	};
@@ -90,15 +95,16 @@ We are going to define a system configuration that sets up two two drives in a z
 								content = lib.mkMerge [
 									(lib.mkIf (i == 0) {
 										mountpoint = "/boot";
-									})
-									(lib.mkIf (i != 0) {
-										mountpoint = "/boot-fallback-${i}";
-									})
-									{
 										type = "filesystem";
 										format = "vfat";
 										mountOptions = [ "nofail" ];
-									}
+									})
+									(lib.mkIf (i != 0) {
+										mountpoint = "/boot-fallback-${toString i}";
+										type = "filesystem";
+										format = "vfat";
+										mountOptions = [ "nofail" ];
+									})
 								];
 							};
 							zfs = {
